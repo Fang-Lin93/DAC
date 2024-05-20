@@ -11,6 +11,7 @@ class D4RLDataset(Dataset):
                  env: gym.Env,
                  clip_to_eps: bool = True,
                  eps: float = 1e-5,
+                 scanning: bool = True,
                  ):
         dataset = d4rl.qlearning_dataset(env)
 
@@ -42,4 +43,4 @@ class D4RLDataset(Dataset):
                          next_observations=dataset['next_observations'].astype(
                              np.float32),
                          size=len(dataset['observations']),
-                         scanning=True)
+                         scanning=scanning)

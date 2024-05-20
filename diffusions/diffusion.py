@@ -107,7 +107,7 @@ def ddpm_sampler(rng, noise_pred_apply_fn, params, T, observations, alphas, alph
     output_tuple, () = jax.lax.scan(fn,
                                     (prior, denoise_key),
                                     jnp.arange(T, 0, -1),  # since alphas <- cat[0, alphas]; betas <- cat[1, betas]
-                                    unroll=5)
+                                    unroll=T)  # unroll = 5
 
     for _ in range(repeat_last_step):
         output_tuple, () = fn(output_tuple, 0)
@@ -148,7 +148,7 @@ def legacy_ddpm_sampler(rng, noise_pred_apply_fn, params, T, observations, alpha
     output_tuple, () = jax.lax.scan(fn,
                                     (prior, denoise_key),
                                     jnp.arange(T, 0, -1),  # since alphas <- cat[0, alphas]; betas <- cat[1, betas]
-                                    unroll=5)
+                                    unroll=T)
 
     for _ in range(repeat_last_step):
         output_tuple, () = fn(output_tuple, 0)
@@ -214,7 +214,7 @@ def ddpm_sampler_with_q_guidance(rng, noise_pred_apply_fn, params, critic_tar_ap
     output_tuple, () = jax.lax.scan(fn,
                                     (prior, denoise_key),
                                     jnp.arange(T, 0, -1),  # since alphas <- cat[0, alphas]; betas <- cat[1, betas]
-                                    unroll=5)
+                                    unroll=T)
 
     for _ in range(repeat_last_step):
         output_tuple, () = fn(output_tuple, 0)
@@ -283,7 +283,7 @@ def ddim_sampler(rng, noise_pred_apply_fn, params, T, observations, alphas, alph
 
     rng, denoise_key = jax.random.split(rng, 2)
     output_tuple, () = jax.lax.scan(fn, (prior, denoise_key), jnp.arange(len(ddim_time_seq) - 1),
-                                    unroll=5)
+                                    unroll=T)
 
     for _ in range(repeat_last_step):
         output_tuple, () = fn(output_tuple, 0)

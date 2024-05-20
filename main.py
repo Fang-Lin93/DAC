@@ -17,7 +17,6 @@ from plots import plot_curve
 from collections import deque
 from absl import app, flags
 
-
 FLAGS = flags.FLAGS
 # 'walker2d-expert-v2'  'halfcheetah-expert-v2' 'ant-medium-v2'    hopper-medium-v2
 # flags.DEFINE_integer('device', 0, 'The device to use.')
@@ -42,6 +41,7 @@ flags.DEFINE_boolean('tqdm', True, 'Use tqdm progress bar.')
 flags.DEFINE_boolean('save_video', False, 'Save videos during evaluation.')
 flags.DEFINE_boolean('save_ckpt', False, 'Save agents during training.')
 flags.DEFINE_boolean('test', False, 'activate test mode. without ray process')
+flags.DEFINE_boolean('rand_batch', False, 'Scanning or random batch sampling of the dataset')
 flags.DEFINE_string('tag', '', 'Give a tag to name specific experiment.')
 
 # model configs
@@ -214,7 +214,8 @@ def main(_):
     print(f"\nSave results to: {save_dir}\n")
 
     _, dataset, r_fn = make_env_and_dataset(FLAGS.env, FLAGS.seed, FLAGS.dataset_name,
-                                            reward_tune=config["reward_tune"])
+                                            reward_tune=config["reward_tune"],
+                                            scanning=not FLAGS.rand_batch)
     learner = Learner[FLAGS.agent]
 
     if FLAGS.test:

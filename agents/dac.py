@@ -376,7 +376,7 @@ class DACLearner(Agent):
         self.num_action_samples = num_action_samples
         self.num_last_repeats = num_last_repeats
         self.act_with_q_guid = act_with_q_guid
-        self.guidance_scale = 1/(eta+EPS)
+        # self.guidance_scale = 1/(eta+EPS)
         self.action_argmax = action_argmax
         self.act_dim = act_dim
         self.clip_sampler = clip_sampler
@@ -411,7 +411,7 @@ class DACLearner(Agent):
     def ddpm_critic_guidance_decoder(self, key: PRNGKey, model_apply_fn: Callable,
                                      params: Params, obs: jnp.array, prior: jnp.array, temperature: float):
         return ddpm_sampler_with_q_guidance(key, model_apply_fn, params, self.critic_tar.apply, self.critic_tar.params,
-                                            self.guidance_scale, self.T, obs, self.alphas, self.alpha_hats,
+                                            1/(self.eta + EPS), self.T, obs, self.alphas, self.alpha_hats,
                                             temperature, self.num_last_repeats, self.clip_sampler,
                                             prior)
 
@@ -430,7 +430,7 @@ class DACLearner(Agent):
         elif self.sampler == 'ddpm_qg':  # 2-stage q guidance
             return ddpm_sampler_with_q_guidance(key, model_apply_fn, params, self.critic_tar.apply,
                                                 self.critic_tar.params,
-                                                self.guidance_scale, self.T, obs, self.alphas, self.alpha_hats,
+                                                1/(self.eta + EPS), self.T, obs, self.alphas, self.alpha_hats,
                                                 temperature, self.num_last_repeats, clip_sampler,
                                                 prior)
         else:
