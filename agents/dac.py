@@ -198,7 +198,7 @@ def _jit_update_v(critic_tar: Model,
 
 
 @partial(jax.jit, static_argnames=('act_model_apply_fn', 'critic_tar_apply_fn', 'action_decoder',
-                                   'act_dim', 'batch_act', 'num_samples', 'argmax', 'clip_sampler'))
+                                   'act_dim', 'batch_act', 'num_samples', 'temperature', 'clip_sampler'))
 def _jit_sample_actions(rng: PRNGKey,
                         act_model_apply_fn: Callable,
                         act_params: Params,
@@ -211,16 +211,17 @@ def _jit_sample_actions(rng: PRNGKey,
                         action_decoder: Callable,
                         batch_act: bool,
                         num_samples: int,
-                        argmax: bool,
+                        # argmax: bool,
                         clip_sampler: bool) -> [PRNGKey, jnp.ndarray]:
     actions, rng = action_decoder(rng, act_model_apply_fn, act_params, observations, prior, 1, clip_sampler)
     rng, key = jax.random.split(rng)
 
     # eval actions
     qs = critic_tar_apply_fn(critic_tar_params, observations, actions).mean(axis=0).reshape(-1, num_samples)
-    if argmax:
+    if temperature <= 0:  # deterministic action
         selected_indices = qs.argmax(axis=-1)
     else:
+        qs = qs / (jnp.abs(qs) + EPS)
         selected_indices = jax.random.categorical(key, logits=qs / (EPS + temperature), axis=-1)  # softmax
     actions = actions.reshape(-1, num_samples, act_dim)[jnp.arange(qs.shape[0]), selected_indices]
 
@@ -264,7 +265,7 @@ class DACLearner(Agent):
                  Q_guidance: str = "soft",
                  use_guidance_loss: bool = True,
                  act_with_q_guid: bool = False,
-                 action_argmax: bool = True,
+                 # action_argmax: bool = True,
                  num_last_repeats: int = 0,
                  clip_sampler: bool = False,
                  time_dim: int = 16,
@@ -272,7 +273,7 @@ class DACLearner(Agent):
                  lr_decay_steps: int = 2000000,
                  sampler: str = "ddpm",
                  action_prior: Union[str, Callable[[PRNGKey, tuple], jnp.ndarray]] = 'normal',
-                 temperature: float = 1.,
+                 temperature: float = 0.,
                  actor_path: str = None,
                  num_qs: int = 2,  # number of Q in Q-ensemble
                  q_tar: str = 'lcb',
@@ -351,6 +352,7 @@ class DACLearner(Agent):
         self.action_prior = action_prior
         self.sampler = sampler
         self.temperature = temperature
+        # self.action_argmax = temperature <= 0
 
         if beta_schedule == 'cosine':
             self.betas = jnp.array(cosine_beta_schedule(T))
@@ -377,7 +379,6 @@ class DACLearner(Agent):
         self.num_last_repeats = num_last_repeats
         self.act_with_q_guid = act_with_q_guid
         # self.guidance_scale = 1/(eta+EPS)
-        self.action_argmax = action_argmax
         self.act_dim = act_dim
         self.clip_sampler = clip_sampler
         self.discount = discount
@@ -513,13 +514,13 @@ class DACLearner(Agent):
                                                self.critic_tar.apply,
                                                self.critic_tar.params,
                                                prior,
-                                               self.temperature,  # for softmax
+                                               self.temperature,  # sample actions using softmax
                                                observations,
                                                self.act_dim,
                                                action_decoder,
                                                batch_act=batch_act,
                                                num_samples=self.num_action_samples,
-                                               argmax=self.action_argmax,
+                                               # argmax=self.action_argmax,
                                                clip_sampler=self.clip_sampler)
         return action
 

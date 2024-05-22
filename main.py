@@ -17,6 +17,16 @@ from plots import plot_curve
 from collections import deque
 from absl import app, flags
 
+# ray.init()
+# ray.init(num_gpus=8)
+# ray.init(num_gpus=8,
+#          _system_config={
+#              "object_spilling_config": json.dumps(
+#                  {"type": "filesystem", "params": {"directory_path": "/mnt/sdb/jj/tmp/ray"}},
+#              )
+#          }, )
+# ray.init(num_gpus=5)
+
 FLAGS = flags.FLAGS
 # 'walker2d-expert-v2'  'halfcheetah-expert-v2' 'ant-medium-v2'    hopper-medium-v2
 # flags.DEFINE_integer('device', 0, 'The device to use.')
@@ -42,7 +52,9 @@ flags.DEFINE_boolean('save_video', False, 'Save videos during evaluation.')
 flags.DEFINE_boolean('save_ckpt', False, 'Save agents during training.')
 flags.DEFINE_boolean('test', False, 'activate test mode. without ray process')
 flags.DEFINE_boolean('rand_batch', False, 'Scanning or random batch sampling of the dataset')
+flags.DEFINE_float('temperature', 0, 'Use argmax (=0) or random action according to temperature')
 flags.DEFINE_string('tag', '', 'Give a tag to name specific experiment.')
+
 
 # model configs
 flags.DEFINE_integer('T', 5, 'The total number of diffusion steps.')
@@ -67,7 +79,9 @@ Learner = {'bc': BCLearner,
            'iql': IQLLearner,
            'sac': SACLearner,
            'ivr': IVRLearner,
+           'hql': HQLLearner,
            'dbc': DDPMBCLearner,
+           'qcd': QCDLearner,
            'dac': DACLearner,
            'dql': DQLLearner}
 
@@ -115,6 +129,7 @@ def _seed_run(learner,
     agent = learner(env.observation_space.sample()[np.newaxis],  # given a batch dim, shape = [1, *(raw_shape)]
                     env.action_space.sample()[np.newaxis],
                     lr_decay_steps=config['max_steps'],
+
                     **a_config)
 
     last_window_mean_return = deque(maxlen=5)
