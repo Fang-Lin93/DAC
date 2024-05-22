@@ -1,5 +1,4 @@
 
-
 env_names = ['walker2d-medium-v2',
              'walker2d-medium-replay-v2',
              'walker2d-medium-expert-v2',

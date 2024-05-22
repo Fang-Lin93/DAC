@@ -1,4 +1,3 @@
-"""Implementations of algorithms for continuous control."""
 
 from typing import Optional, Sequence, Tuple
 
@@ -42,9 +41,6 @@ class IQLLearner(Agent):
                  lr_decay_steps: Optional[int] = None,
                  opt_decay_schedule: str = "cosine",
                  **kwargs):
-        """
-        An implementation of the version of Soft-Actor-Critic described in https://arxiv.org/abs/1801.01290
-        """
 
         self.expectile = expectile
         self.beta = beta

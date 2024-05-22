@@ -17,19 +17,9 @@ from plots import plot_curve
 from collections import deque
 from absl import app, flags
 
-# ray.init()
-# ray.init(num_gpus=8)
-# ray.init(num_gpus=8,
-#          _system_config={
-#              "object_spilling_config": json.dumps(
-#                  {"type": "filesystem", "params": {"directory_path": "/mnt/sdb/jj/tmp/ray"}},
-#              )
-#          }, )
-# ray.init(num_gpus=5)
 
 FLAGS = flags.FLAGS
 # 'walker2d-expert-v2'  'halfcheetah-expert-v2' 'ant-medium-v2'    hopper-medium-v2
-# flags.DEFINE_integer('device', 0, 'The device to use.')
 flags.DEFINE_string('env', 'hopper-medium-replay-v2', 'Environment name.')
 flags.DEFINE_string('reward_tune', 'iql_locomotion', 'Reward tune.')
 flags.DEFINE_enum('dataset_name', 'd4rl', ['d4rl'], 'Dataset name.')
@@ -42,7 +32,7 @@ flags.DEFINE_integer('log_interval', 5000, 'Logging interval.')
 flags.DEFINE_integer('eval_interval', 10000, 'Eval interval.')
 flags.DEFINE_integer('batch_size', 256, 'Mini batch size.')
 flags.DEFINE_integer('max_steps', int(2e6), 'Number of training steps.')
-flags.DEFINE_integer('finetune_step', int(3e6), 'After which it will change to online fine-tuning')
+flags.DEFINE_integer('finetune_step', int(3e6), 'When to change to online fine-tuning (future work)')
 flags.DEFINE_integer('buffer_size', int(1e6), 'The replay buffer size of online fine-tuning')
 flags.DEFINE_float('discount', 0.99, 'Discount factor')
 flags.DEFINE_float('percentile', 100.0, 'Dataset percentile (see https://arxiv.org/abs/2106.01345).')
@@ -79,9 +69,7 @@ Learner = {'bc': BCLearner,
            'iql': IQLLearner,
            'sac': SACLearner,
            'ivr': IVRLearner,
-           'hql': HQLLearner,
            'dbc': DDPMBCLearner,
-           'qcd': QCDLearner,
            'dac': DACLearner,
            'dql': DQLLearner}
 

@@ -49,22 +49,22 @@ Our proposed algorithm DAC achieves the following normalized scores on:
 
 ### [D4RL](https://github.com/digital-brain-sh/d4rl) Dataset
 
-| Dataset              | DAC     |
-|----------------------|---------|
-| halfcheetah-m        | 59.1    |
-| hopper-m             | 101.2   |
-| walker2d-m           | 96.8    |
-| halfcheetah-m-r      | 55.0    |
-| hopper-m-r           | 103.1   |
-| walker2d-m-r         | 96.8    |
-| halfcheetah-m-e      | 99.1    |
-| hopper-m-e           | 111.7   |
-| walker2d-m-e         | 113.6   |
-| antmaze-u            | 99.5    |
-| antmaze-u-div        | 85.0    |
-| antmaze-m-play       | 85.8    |
-| antmaze-m-div        | 84.0    |
-| antmaze-l-play       |         |
-| antmaze-l-div        | 55.3    |
+| Dataset              | DAC   |
+|----------------------|-------|
+| halfcheetah-m        | 59.1  |
+| hopper-m             | 101.2 |
+| walker2d-m           | 96.8  |
+| halfcheetah-m-r      | 55.0  |
+| hopper-m-r           | 103.1 |
+| walker2d-m-r         | 96.8  |
+| halfcheetah-m-e      | 99.1  |
+| hopper-m-e           | 111.7 |
+| walker2d-m-e         | 113.6 |
+| antmaze-u            | 99.5  |
+| antmaze-u-div        | 85.0  |
+| antmaze-m-play       | 85.8  |
+| antmaze-m-div        | 84.0  |
+| antmaze-l-play       | 50.3  |
+| antmaze-l-div        | 55.3  |
 
 
