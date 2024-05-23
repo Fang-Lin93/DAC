@@ -395,33 +395,3 @@ class DQLLearner(Agent):
                                                temperature=1.)
 
         return np.asarray(action)
-
-
-if __name__ == '__main__':
-
-    import numpy as np
-    from datasets import make_env_and_dataset
-
-    env, dataset = make_env_and_dataset('hopper-medium-expert-v2', 23, 'd4rl')
-    # dataset.mc_return = dataset.get_future_mc_return(discount=0.99, avg_credit_assign=False)
-    # dataset.mc_return = dataset.normalize_mc_return(100)
-
-    learner = DQLLearner(seed=32,
-                         observations=env.observation_space.sample()[np.newaxis],
-                         actions=env.action_space.sample()[np.newaxis],
-                         sampler='ddpm')
-
-    state = env.observation_space.sample()[np.newaxis]
-    act_T = env.action_space.sample()[np.newaxis]
-    t = jnp.ones((1, 1))
-
-    pred_noise = learner.actor(state, act_T, t)
-
-    batch = dataset.sample(256)
-
-    for i in range(100):
-        train_stat = learner.update(batch)
-        for k_, v_ in train_stat.items():
-            print(k_, v_)
-
-    a_ = learner.sample_actions(observations=env.reset())

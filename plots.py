@@ -68,3 +68,8 @@ def compare_hist(dirs, labels=None, title=None, **kwargs):
         fig_, ax_ = plot_curve(dir_name, label=lab, fig=fig_, ax=ax_, title=title, **kwargs)
 
     return fig_, ax_
+
+
+if __name__ == "__main__":
+    fig, _ = compare_hist(["results/walker2d-medium-v2/DAC_b=1.0|QTar=lcb|rho=1.0"])
+    fig.show()
