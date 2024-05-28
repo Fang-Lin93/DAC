@@ -23,15 +23,18 @@ To train DAC using dual gradient ascent, run the code with `eta_lr > 0` and `bc_
 Here is an example for training on the `walker2d-medium-v2` dataset:
 
 ```train
-XLA_PYTHON_CLIENT_PREALLOCATE=false python main.py --env walker2d-medium-v2 --agent dac --eta 1 --eta_lr 0.001 --bc_threshold 1 --q_tar lcb 
+python main.py --env walker2d-medium-v2 --agent dac --eta 1 --eta_lr 0.001 --bc_threshold 1 --rho 3.5 --q_tar lcb --num_seed 5 --gpu 0
 ```
 
 If using a fixed eta, run the code with `eta_lr = 0` and `eta > 0`. 
 Here is an example for the training on the `antmaze-umaze-v0` dataset:
 
 ```train
-XLA_PYTHON_CLIENT_PREALLOCATE=false python main.py --env antmaze-umaze-v0 --agent dac --maxQ --eta 0.1 --eta_lr 0 --rho 1 --q_tar lcb
+python main.py --env antmaze-umaze-v0 --agent dac --maxQ --eta 0.1 --eta_lr 0 --rho 3.5 --q_tar lcb --num_seed 5 --gpu 0
 ```
+
+* Remark: the code for LCB has updated to consider the ensemble size H. To get a rho=1 in the paper, you need to set
+```new_rho = rho * sqrt(H)``` in the code implementation (here I roughly use 3.5, resulting in similar results).
 
 ## Evaluation
 

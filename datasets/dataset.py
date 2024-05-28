@@ -85,8 +85,11 @@ class Dataset(object):
     def sample(self, batch_size: int) -> Batch:
 
         if self.scanning:
-            indices = self.scanning_indices[self.batch_idx:self.batch_idx+batch_size]
-            self.batch_idx = (self.batch_idx + batch_size) % self.size
+            indices = self.scanning_indices[self.batch_idx:self.batch_idx + batch_size]
+            self.batch_idx += batch_size
+            if self.batch_idx >= self.size:
+                np.random.shuffle(self.scanning_indices)
+                self.batch_idx = 0
         else:
             indices = sample_n_k(self.size, batch_size)
 

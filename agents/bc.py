@@ -85,16 +85,16 @@ def _mle_update(actor: Model, batch: Batch, rng: PRNGKey, entropy_bonus=None) ->
 
 class BCLearner(Agent):
 
-    save_dir = 'ckpt/bc'
+    name = 'bc'
     model_names = ['actor']
 
     def __init__(self,
                  observations: jnp.ndarray,
                  actions: jnp.ndarray,
                  seed: int,
-                 actor_lr: Union[float, optax.Schedule] = 1e-3,
+                 actor_lr: Union[float, optax.Schedule] = 3e-4,
                  hidden_dims: Sequence[int] = (256, 256),
-                 layer_norm: bool = False,
+                 layer_norm: bool = True,
                  dropout_rate: Optional[float] = None,
                  weight_decay: Optional[float] = None,
                  entropy_bonus: Optional[float] = None,

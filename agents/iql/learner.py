@@ -33,11 +33,11 @@ class IQLLearner(Agent):
                  hidden_dims: Sequence[int] = (256, 256),
                  discount: float = 0.99,
                  tau: float = 0.005,  # lr for exponential moving avg. (soft updates)
-                 expectile: float = 0.8,
-                 beta: float = 1,  # inverse temperature for awr
+                 expectile: float = 0.7,
+                 beta: float = 3.,  # inverse temperature for awr
                  temperature: float = 0.1,
                  dropout_rate: Optional[float] = None,
-                 layer_norm: bool = False,
+                 layer_norm: bool = True,
                  lr_decay_steps: Optional[int] = None,
                  opt_decay_schedule: str = "cosine",
                  **kwargs):

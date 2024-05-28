@@ -12,8 +12,7 @@ from networks.resnet import MLPResNet
 from networks.updates import ema_update
 from diffusions.diffusion import DDPM, ddpm_sampler, ddim_sampler, ddpm_sampler_with_q_guidance
 from diffusions.utils import FourierFeatures, cosine_beta_schedule, vp_beta_schedule
-from datasets import Batch
-from networks.types import InfoDict, Params, PRNGKey
+from networks.types import InfoDict, Params, PRNGKey, Batch
 from agents.base import Agent
 
 
@@ -155,6 +154,11 @@ def _jit_update_critic(rng: PRNGKey,
         next_v = rho * next_v.min(axis=0) + (1-rho) * next_v.max(axis=0)
     elif q_tar == 'lcb':  # lcb over ensemble
         next_v = next_v.mean(axis=0) - rho * next_v.std(axis=0)
+    elif q_tar == 'rand_convex':
+        alpha_key, _ = jax.random.split(key)
+        alphas = jax.random.uniform(alpha_key, next_v.shape)  # if rand_ensemble else jnp.ones_like(target_qs.shape)
+        alphas /= (alphas.sum(axis=0, keepdims=True) + EPS)
+        next_v = (next_v * alphas).sum(axis=0)
     else:
         raise NotImplementedError(f'Unrecognized Q-target type={q_tar}')
 
@@ -245,8 +249,8 @@ class DACLearner(Agent):
                  actor_lr: Union[float, optax.Schedule] = 3e-4,
                  critic_lr: Union[float, optax.Schedule] = 3e-4,
                  hidden_dims: Sequence[int] = (256, 256, 256),
-                 clip_grad_norm: float = 1,
-                 dropout_rate: Optional[float] = None,
+                 clip_grad_norm: float = 1.,
+                 dropout_rate: Optional[float] = 0,
                  layer_norm: bool = False,
                  discount: float = 0.99,
                  ema_tau: float = 0.005,  # ema for critic learning
@@ -261,13 +265,12 @@ class DACLearner(Agent):
                  T: int = 5,  # number of backward steps
                  ddim_step: int = 5,
                  num_q_samples: int = 10,  # number of sampled x_0 for Q updates
-                 num_action_samples: int = 50,  # number of sampled actions to select from for action
+                 num_action_samples: int = 10,  # number of sampled actions to select from for action
                  Q_guidance: str = "soft",
                  use_guidance_loss: bool = True,
                  act_with_q_guid: bool = False,
-                 # action_argmax: bool = True,
                  num_last_repeats: int = 0,
-                 clip_sampler: bool = False,
+                 clip_sampler: bool = True,
                  time_dim: int = 16,
                  beta_schedule: str = 'vp',
                  lr_decay_steps: int = 2000000,
@@ -391,7 +394,7 @@ class DACLearner(Agent):
         self.eta = jnp.array(eta)
         self.eta_min, self.eta_max = eta_min, eta_max
         self.eta_lr = eta_lr
-        self.rho = rho
+        self.rho = float(rho / jnp.sqrt(num_qs))  # just for fair comparison among different ensemble size
         self.bc_threshold = bc_threshold
         self.Q_guidance = Q_guidance
         self.use_guidance_loss = use_guidance_loss

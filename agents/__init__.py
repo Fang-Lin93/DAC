@@ -6,6 +6,7 @@ from agents.ivr.learner import IVRLearner
 from agents.diffusion_bc import DDPMBCLearner
 from agents.dac import DACLearner
 from agents.diffuisonQL import DQLLearner
+from agents.cql import CQLLearner
 
 
 

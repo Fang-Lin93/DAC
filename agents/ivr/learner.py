@@ -31,14 +31,14 @@ class IVRLearner(Agent):
                  hidden_dims: Sequence[int] = (256, 256),
                  discount: float = 0.99,
                  tau: float = 0.005,
-                 alpha: float = 0.1,
+                 alpha: float = 1.,
                  dropout_rate: Optional[float] = None,
                  value_dropout_rate: Optional[float] = None,
-                 layer_norm: bool = False,
+                 layer_norm: bool = True,
                  lr_decay_steps: Optional[int] = None,
                  max_clip: Optional[int] = None,
                  # mix_dataset: Optional[str] = None,
-                 alg: Optional[str] = None,
+                 alg: Optional[str] = 'sql',  # 'sql' or 'eql'
                  opt_decay_schedule: str = "cosine",
                  **kwargs):
 

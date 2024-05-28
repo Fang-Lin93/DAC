@@ -37,11 +37,11 @@ class DDPMBCLearner(Agent):
                  ddim_step: int = 5,
                  num_samples: int = 1,  # number of sampled x_0
                  num_last_repeats: int = 0,
-                 clip_sampler: bool = False,
+                 clip_sampler: bool = True,
                  time_dim: int = 16,
                  beta_schedule: str = 'vp',
                  lr_decay_steps: int = 2000000,
-                 sampler: str = "ddim",
+                 sampler: str = "ddpm",
                  temperature: float = 1,
                  **kwargs
                  ):

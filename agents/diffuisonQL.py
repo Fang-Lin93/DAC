@@ -197,7 +197,7 @@ class DQLLearner(Agent):
                  time_dim: int = 16,
                  beta_schedule: str = 'vp',
                  lr_decay_steps: int = 2000000,
-                 sampler: str = "ddim",
+                 sampler: str = "ddpm",
                  action_prior: str = 'normal',
                  temperature: float = 1.,
                  actor_path: str = None,

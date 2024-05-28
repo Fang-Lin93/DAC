@@ -35,6 +35,7 @@ class SACLearner(Agent):
                  tau: float = 0.005,  # used for EMA
                  lr_decay_steps: Optional[int] = None,
                  opt_decay_schedule: str = "cosine",
+                 layer_norm: bool = True,
                  rem: bool = False,  # random ensemble mixture of Q values
                  **kwargs):
 
@@ -49,7 +50,8 @@ class SACLearner(Agent):
                                      log_std_min=-5.0,
                                      dropout_rate=dropout_rate,
                                      state_dependent_std=False,
-                                     tanh_squash_distribution=False)
+                                     tanh_squash_distribution=False,
+                                     layer_norm=layer_norm)
 
         if opt_decay_schedule == "cosine":
             schedule_fn = optax.cosine_decay_schedule(-actor_lr, lr_decay_steps)

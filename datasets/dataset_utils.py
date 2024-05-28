@@ -2,10 +2,8 @@ from typing import Tuple
 
 import gym
 
-# from jaxrl.datasets.awac_dataset import AWACDataset
 from datasets.d4rl_dataset import D4RLDataset
 from datasets.dataset import Dataset
-import numpy as np
 import d4rl
 from typing import Callable
 from utils import traj_return_normalize
@@ -13,7 +11,7 @@ import wrappers
 
 
 def make_env_and_dataset(env_name: str, seed: int, dataset_name: str,
-                         video_save_folder: str = None, reward_tune: bool = 'no',
+                         video_save_folder: str = None, reward_tune: str = 'no',
                          episode_return: bool = False, scanning: bool = True) -> Tuple[gym.Env, Dataset, Callable]:
     # env = make_env(env_name, seed, video_save_folder)
     env = gym.make(env_name)  # test env. only
