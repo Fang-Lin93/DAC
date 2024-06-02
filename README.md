@@ -23,18 +23,15 @@ To train DAC using dual gradient ascent, run the code with `eta_lr > 0` and `bc_
 Here is an example for training on the `walker2d-medium-v2` dataset:
 
 ```train
-python main.py --env walker2d-medium-v2 --agent dac --eta 1 --eta_lr 0.001 --bc_threshold 1 --rho 3.5 --q_tar lcb --num_seed 5 --gpu 0
+python main.py --env walker2d-medium-v2 --agent dac --eta 1 --eta_lr 0.001 --bc_threshold 1 --rho 1 --q_tar lcb --num_seed 8 --gpu 0
 ```
 
 If using a fixed eta, run the code with `eta_lr = 0` and `eta > 0`. 
 Here is an example for the training on the `antmaze-umaze-v0` dataset:
 
 ```train
-python main.py --env antmaze-umaze-v0 --agent dac --maxQ --eta 0.1 --eta_lr 0 --rho 3.5 --q_tar lcb --num_seed 5 --gpu 0
+python main.py --env antmaze-umaze-v0 --agent dac --maxQ --eta 0.1 --eta_lr 0 --rho 1 --q_tar lcb --num_seed 8 --gpu 0
 ```
-
-* Remark: the code for LCB has updated to consider the ensemble size H. To get a rho=1 in the paper, you need to set
-```new_rho = rho * sqrt(H)``` in the code implementation (here I roughly use 3.5, resulting in similar results).
 
 ## Evaluation
 
@@ -45,12 +42,14 @@ To check the training statistics, you can use the tensorboard:
 ```
 tensorboard --logdir 'results/{env name}/{results_folder}'
 ```
+Here is an example that demonstrates the visualization of the training process after executing the code on `walker2d-medium-v2`, as shown previously:
+```
+tensorboard --logdir results/walker2d-medium-v2/DAC_b=1.0|QTar=lcb|rho=1.0
+```
 
 ## Results
 
-Our proposed algorithm DAC achieves the following normalized scores on:
-
-### [D4RL](https://github.com/digital-brain-sh/d4rl) Dataset
+Our proposed algorithm DAC achieves the following normalized scores on [D4RL](https://github.com/digital-brain-sh/d4rl) Dataset:
 
 | Dataset              | DAC   |
 |----------------------|-------|
@@ -70,4 +69,6 @@ Our proposed algorithm DAC achieves the following normalized scores on:
 | antmaze-l-play       | 50.3  |
 | antmaze-l-div        | 55.3  |
 
-
+Training curves:
+![](locomotion_curves.svg)
+![](antmaze_curves.svg)

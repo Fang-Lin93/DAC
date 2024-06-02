@@ -394,7 +394,7 @@ class DACLearner(Agent):
         self.eta = jnp.array(eta)
         self.eta_min, self.eta_max = eta_min, eta_max
         self.eta_lr = eta_lr
-        self.rho = float(rho / jnp.sqrt(num_qs))  # just for fair comparison among different ensemble size
+        self.rho = rho  # use float(rho / jnp.sqrt(num_qs)) or other tuning methods for different ensemble size
         self.bc_threshold = bc_threshold
         self.Q_guidance = Q_guidance
         self.use_guidance_loss = use_guidance_loss
