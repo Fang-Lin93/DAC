@@ -1,7 +1,7 @@
 # Diffusion Actor-Critic: Formulating Constrained Policy Iteration as Diffusion Noise Regression for Offline Reinforcement Learning.
 
 This repository is the official implementation of 
-[Diffusion Actor-Critic: Formulating Constrained Policy Iteration as Diffusion Noise Regression for Offline Reinforcement Learning].
+[Diffusion Actor-Critic: Formulating Constrained Policy Iteration as Diffusion Noise Regression for Offline Reinforcement Learning](https://arxiv.org/abs/2405.20555).
 Our implementation is built upon [JAX](https://github.com/ikostrikov/jaxrl) and [jaxrl](https://github.com/ikostrikov/jaxrl). 
 
 ## Requirements
@@ -69,6 +69,38 @@ Our proposed algorithm DAC achieves the following normalized scores on [D4RL](ht
 | antmaze-l-play       | 50.3  |
 | antmaze-l-div        | 55.3  |
 
+
 Training curves:
-![](locomotion_curves.svg)
-![](antmaze_curves.svg)
+
+| Locomotion-v2              | Antmaze-v0              |
+|----------------------------|-------------------------|
+| ![](locomotion_curves.svg) | ![](antmaze_curves.svg) |
+
+
+
+## Citations
+
+Please cite this paper if you use this repo
+
+```
+@misc{fang2024diffusion,
+      title={Diffusion Actor-Critic: Formulating Constrained Policy Iteration as Diffusion Noise Regression for Offline Reinforcement Learning}, 
+      author={Linjiajie Fang and Ruoxue Liu and Jing Zhang and Wenjia Wang and Bing-Yi Jing},
+      year={2024},
+      eprint={2405.20555},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
+```
+
+Please also cite JAXRL as well
+```
+@misc{jaxrl,
+  author = {Kostrikov, Ilya},
+  doi = {10.5281/zenodo.5535154},
+  month = {10},
+  title = {{JAXRL: Implementations of Reinforcement Learning algorithms in JAX}},
+  url = {https://github.com/ikostrikov/jaxrl},
+  year = {2021}
+}
+```
